@@ -27,14 +27,14 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import AdapterLaptop.MouseAdapter;
-import IntefaceForLaptopManager.OnEventClickMouseListener;
-import ModelLaptop.Mouse;
+import InterfaceForHomeManager.OnEventShowProduct;
+import ModelHome.Product;
 import URLServerLink.Sever;
 
 
 public class MouseFragment extends Fragment {
     public static final String KEY_GET_MOUSE_LAPTOP = "GET_MOUSE_LAPTOP";
-    ArrayList<Mouse> mListMouse;
+    ArrayList<Product> mListMouse;
     private RecyclerView rv;
     private MouseAdapter mouseAdapter;
 
@@ -42,11 +42,11 @@ public class MouseFragment extends Fragment {
 
     }
 
-    public static MouseFragment newInstance(String param1, String param2) {
-        MouseFragment fragment = new MouseFragment();
-
-        return fragment;
-    }
+//    public static MouseFragment newInstance(String param1, String param2) {
+//        MouseFragment fragment = new MouseFragment();
+//
+//        return fragment;
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,16 +59,16 @@ public class MouseFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = LayoutInflater.from(getContext()).inflate(R.layout.fragment_mouse,container,false);
         mListMouse = new ArrayList<>();
-        mouseAdapter = new MouseAdapter(getContext(), mListMouse, new OnEventClickMouseListener() {
+        mouseAdapter = new MouseAdapter(getContext(), mListMouse, new OnEventShowProduct() {
             @Override
-            public void onClick(Mouse mouse) {
+            public void onClickShowProduct(Product product) {
                 Intent intent = new Intent(getActivity(), ActivityShowProduct.class);
-                intent.putExtra(KEY_GET_MOUSE_LAPTOP, mouse);
+                intent.putExtra(KEY_GET_MOUSE_LAPTOP, product);
                 startActivity(intent);
-                getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-
+                getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
             }
         });
+
         rv = v.findViewById(R.id.rvFragmentMouse);
         rv.setAdapter(mouseAdapter);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),2);
@@ -93,19 +93,22 @@ public class MouseFragment extends Fragment {
 
                     for (int i = 0; i < response.length(); i++) {
                         try {
-                            JSONObject jsonObject = response.getJSONObject(i);
-                            Id = jsonObject.getInt("Id");
-                            description = jsonObject.getString("MouseDescription");
-                            image = jsonObject.getString("MouseImage");
-                            Name = jsonObject.getString("MouseName");
-                            price = jsonObject.getDouble("MousePrice");
-                            status = jsonObject.getInt("MouseStatus");
+                            JSONObject object = response.getJSONObject(i);
+                            mListMouse.add(new Product(
+                                    object.getInt("Id"),
+                                    object.getString("ProductName"),
+                                    object.getString("Brand"),
+                                    object.getDouble("Price"),
+                                    object.getInt("Status"),
+                                    object.getString("Description"),
+                                    object.getString("Picture"),
+                                    object.getInt("IdType")
+                            ));
 
-                            mListMouse.add(new Mouse(Id, description, image,Name, price, status));
-                            mouseAdapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        mouseAdapter.notifyDataSetChanged();
                     }
                 }
 

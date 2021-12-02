@@ -8,15 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
@@ -27,7 +22,6 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.malthshop.ActivityShowProduct;
 import com.example.malthshop.R;
-import com.example.malthshop.databinding.FragmentLaptopBinding;
 import com.google.android.material.tabs.TabLayout;
 
 import org.json.JSONArray;
@@ -44,11 +38,11 @@ import AdapterLaptop.BrandAdapter;
 import AdapterLaptop.PhotoAdapter;
 import AdapterLaptop.ProductAdapter;
 import AdapterLaptop.TabLayoutFragmentLaptopAdapter;
-import IntefaceForLaptopManager.OnEventClickProductListener;
+import InterfaceForHomeManager.OnEventShowProduct;
+import ModelHome.Product;
 import ModelLaptop.Brand;
 import ModelLaptop.Brand2;
 import ModelLaptop.Photo;
-import ModelLaptop.Product;
 import URLServerLink.Sever;
 import me.relex.circleindicator.CircleIndicator;
 
@@ -107,15 +101,17 @@ public class LaptopFragment extends Fragment {
         // khoi tao adapter
         brand2Adapter = new Brand2Adapter(getContext(), mListBrand2);
         brandAdapter = new BrandAdapter(getContext(), mListBrand);
-        productAdapter = new ProductAdapter(getContext(), mListProduct, new OnEventClickProductListener() {
+
+        productAdapter = new ProductAdapter(getContext(), mListProduct, new OnEventShowProduct() {
             @Override
-            public void onClick(Product product) {
+            public void onClickShowProduct(Product product) {
                 Intent intent = new Intent(getActivity(), ActivityShowProduct.class);
                 intent.putExtra(KEY_GET_LAPTOP_PRODUCT, product);
                 startActivity(intent);
-                getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
             }
         });
+
         // rv set adapter
         recyclerViewThuongHieu = v.findViewById(R.id.rvThuongHieu);
         recyclerViewProductLaptop = v.findViewById(R.id.rvLaptop);

@@ -22,7 +22,6 @@ import java.util.List;
 
 import InterfaceForHomeManager.OnEventShowProductListener;
 import ModelHome.SpecialProduct;
-import SharePreferencesManager.SavePreferences;
 
 public class SProductAdapter extends RecyclerView.Adapter<SProductAdapter.SProductViewHolder> {
     private Context mContext;

@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.malthshop.R;
@@ -17,19 +18,18 @@ import com.squareup.picasso.Picasso;
 import java.text.DecimalFormat;
 import java.util.List;
 
-import IntefaceForLaptopManager.OnEventClickMouseListener;
-import ModelLaptop.Mouse;
-import SharePreferencesManager.SavePreferences;
+import InterfaceForHomeManager.OnEventShowProduct;
+import ModelHome.Product;
 
 public class MouseAdapter extends RecyclerView.Adapter<MouseAdapter.MouseViewHolder> {
     private Context context;
-    private List<Mouse> mListMouse;
-    private OnEventClickMouseListener onEventClickMouseListener;
+    private List<Product> mListMouse;
+    private OnEventShowProduct onEventShowProduct;
 
-    public MouseAdapter(Context context, List<Mouse> mListMouse, OnEventClickMouseListener onEventClickMouseListener) {
+    public MouseAdapter(Context context, List<Product> mListMouse, OnEventShowProduct onEventShowProduct) {
         this.context = context;
         this.mListMouse = mListMouse;
-        this.onEventClickMouseListener =onEventClickMouseListener;
+        this.onEventShowProduct =onEventShowProduct;
     }
 
     @NonNull
@@ -42,18 +42,18 @@ public class MouseAdapter extends RecyclerView.Adapter<MouseAdapter.MouseViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MouseViewHolder holder, int position) {
-        Mouse product = mListMouse.get(position);
+        Product product = mListMouse.get(position);
         DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
-        holder.txtPriceMouse.setText(decimalFormat.format(product.getMousePrice())+"");
-        holder.txtNameMouse.setText(product.getMouseName());
-        Picasso.get().load(product.getMouseImage())
+        holder.txtPriceMouse.setText(decimalFormat.format(product.getPrice())+"");
+        holder.txtNameMouse.setText(product.getProductName());
+        Picasso.get().load(product.getImgProduct())
                 .placeholder(R.drawable.laptop)
                 .error(R.drawable.ic_home)
                 .into(holder.imgMouse);
         holder.lvContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onEventClickMouseListener.onClick(product);
+                onEventShowProduct.onClickShowProduct(product);
             }
         });
     }
@@ -69,11 +69,11 @@ public class MouseAdapter extends RecyclerView.Adapter<MouseAdapter.MouseViewHol
         private TextView txtNameMouse;
         private TextView txtPriceMouse;
         private ImageView imgMouse;
-        private LinearLayout lvContainer;
+        private CardView lvContainer;
 
         public MouseViewHolder(@NonNull View itemView) {
             super(itemView);
-            lvContainer = (LinearLayout) itemView.findViewById(R.id.lv_container);
+            lvContainer = (CardView) itemView.findViewById(R.id.lv_container);
             txtNameMouse = (TextView) itemView.findViewById(R.id.txtNameMouse);
             txtPriceMouse = (TextView) itemView.findViewById(R.id.txtPriceMouse);
             imgMouse = (ImageView) itemView.findViewById(R.id.imgMouse);

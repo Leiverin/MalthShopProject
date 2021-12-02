@@ -10,8 +10,9 @@ public class SpecialProduct implements Serializable {
     private int status;
     private String productName;
     private String description;
+    private int type;
 
-    public SpecialProduct(int id, String img, double percentSale, double price, int status, String productName, String description) {
+    public SpecialProduct(int id, String img, double percentSale, double price, int status, String productName, String description, int type) {
         this.id = id;
         this.img = img;
         this.percentSale = percentSale;
@@ -19,6 +20,15 @@ public class SpecialProduct implements Serializable {
         this.status = status;
         this.productName = productName;
         this.description = description;
+        this.type = type;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public double getPercentSale() {

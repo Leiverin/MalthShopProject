@@ -12,4 +12,5 @@
     <color name="red">#FF0000</color>
     <color name="yellow">#CCFAE20C</color>
     <color name="color_button">#3C3C3C</color>
+    <color name="color_pay_product">#F8F8F8</color>
 </resources>

@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
@@ -40,16 +41,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import AdapterHome.FeaturedProductAdapter;
-import InterfaceForHomeManager.OnEventShowComponentListener;
-import InterfaceForHomeManager.OnEventShowFeaturedProduct;
+import InterfaceForHomeManager.OnEventShowProduct;
 import InterfaceForHomeManager.OnEventShowProductListener;
-import ModelHome.FeaturedProduct;
 import ModelHome.Option;
 import AdapterHome.OptionAdapter;
 import ModelHome.Brand;
 import AdapterHome.BrandAdapter;
-import ModelHome.Component;
 import AdapterHome.ComponentAdapter;
+import ModelHome.Product;
 import Slider.Image;
 import Slider.ImageAdapter;
 import AdapterHome.SProductAdapter;
@@ -68,9 +67,8 @@ public class HomeFragment extends Fragment {
     private List<Option> mListOption;
     private List<SpecialProduct> mListSProduct;
     private List<Brand> mListBrand;
-    private List<Component> mListComponent;
-    private List<Component> mListComponentFeatured;
-    private List<FeaturedProduct> mListFeaturedProduct;
+    private List<Product> mListProduct;
+    private List<Product> mListComponent;
     private FeaturedProductAdapter mFeaturedAdapter;
     private ImageAdapter mImgAdapter;
     private BrandAdapter brandAdapter;
@@ -78,15 +76,17 @@ public class HomeFragment extends Fragment {
     private ComponentAdapter mComponentAdapter;
     private List<SubSliderItem> items;
     private Timer mTimer;
-
+    private ViewPager viewPagerSlide;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        viewPagerSlide = binding.viewpagerSlide;
+        mListProduct = new ArrayList<>();
         // Auto slide
         mListImage = getListImg();
         mImgAdapter = new ImageAdapter(getContext(), mListImage);
-        binding.viewpagerSlide.setAdapter(mImgAdapter);
+        viewPagerSlide.setAdapter(mImgAdapter);
         binding.circle.setViewPager(binding.viewpagerSlide);
         mImgAdapter.registerDataSetObserver(binding.circle.getDataSetObserver());
         autoSlide();
@@ -108,7 +108,7 @@ public class HomeFragment extends Fragment {
                 Intent intent = new Intent(getContext(), ActivityShowProduct.class);
                 intent.putExtra(KEY_GET_SPECIAL_PRODUCT, specialProduct);
                 startActivity(intent);
-                getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
             }
         });
         binding.rvSpecialProduct.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -124,19 +124,18 @@ public class HomeFragment extends Fragment {
 
         // ComponentElectric
         mListComponent = new ArrayList<>();
-        mComponentAdapter = new ComponentAdapter(getContext(), mListComponent, new OnEventShowComponentListener() {
+        mComponentAdapter = new ComponentAdapter(getContext(), mListComponent, new OnEventShowProduct() {
             @Override
-            public void onShowComponent(Component component) {
+            public void onClickShowProduct(Product product) {
                 Intent intent = new Intent(getContext(), ActivityShowProduct.class);
-                intent.putExtra(KEY_GET_COMPONENT_PRODUCT, component);
+                intent.putExtra(KEY_GET_COMPONENT_PRODUCT, product);
                 startActivity(intent);
-                getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
             }
         });
         binding.rvComponentProduct.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.rvComponentProduct.setAdapter(mComponentAdapter);
         getElectricComponent();
-
         // Sub slide
         items = getListSubSlide();
         binding.viewpagerSubSlide.setAdapter(new SubSliderItemAdapter(getContext(),binding.viewpagerSubSlide, items));
@@ -164,29 +163,18 @@ public class HomeFragment extends Fragment {
         });
 
         // Featured Product
-        mListFeaturedProduct = new ArrayList<>();
-        mListComponentFeatured = new ArrayList<>();
-        mFeaturedAdapter = new FeaturedProductAdapter(getContext(), mListFeaturedProduct, mListComponent, new OnEventShowFeaturedProduct() {
+        mFeaturedAdapter = new FeaturedProductAdapter(getContext(), mListProduct, new OnEventShowProduct() {
             @Override
-            public void onClickShowFeaturedProduct(FeaturedProduct featuredProduct) {
+            public void onClickShowProduct(Product product) {
                 Intent intent = new Intent(getContext(), ActivityShowProduct.class);
-                intent.putExtra(KEY_GET_FEATURED_PRODUCT, featuredProduct);
+                intent.putExtra(KEY_GET_FEATURED_PRODUCT, product);
                 startActivity(intent);
-                getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-            }
-
-            @Override
-            public void onClickShowFeaturedComponent(Component component) {
-                Intent intent = new Intent(getContext(), ActivityShowProduct.class);
-                intent.putExtra(KEY_GET_FEATURED_COMPONENT, component);
-                startActivity(intent);
-                getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
             }
         });
-        binding.rvFeaturedProduct.setLayoutManager(new GridLayoutManager(getContext(),2,GridLayoutManager.VERTICAL,false));
+        binding.rvFeaturedProduct.setLayoutManager(new GridLayoutManager(getContext(),2));
         binding.rvFeaturedProduct.setAdapter(mFeaturedAdapter);
         getFeatureProduct();
-
         return root;
     }
     private Handler sliderHandler = new Handler();
@@ -223,13 +211,13 @@ public class HomeFragment extends Fragment {
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
-                          int itemShowing = binding.viewpagerSlide.getCurrentItem();
+                          int itemShowing = viewPagerSlide.getCurrentItem();
                         int totalItem = mListImage.size() - 1;
                         if(itemShowing < totalItem){
                             itemShowing++;
-                            binding.viewpagerSlide.setCurrentItem(itemShowing);
+                            viewPagerSlide.setCurrentItem(itemShowing);
                         }else{
-                            binding.viewpagerSlide.setCurrentItem(0);
+                            viewPagerSlide.setCurrentItem(0);
                         }
                     }
                 });
@@ -290,7 +278,8 @@ public class HomeFragment extends Fragment {
                                 jsonObject.getDouble("Price"),
                                 jsonObject.getInt("Status"),
                                 jsonObject.getString("ProductName"),
-                                jsonObject.getString("Description")
+                                jsonObject.getString("Description"),
+                                jsonObject.getInt("Type")
                                 ));
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -334,19 +323,22 @@ public class HomeFragment extends Fragment {
 
     private void getElectricComponent(){
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, ServerLink.URL_ELECTRIC_COMPONENT, null, new Response.Listener<JSONArray>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, ServerLink.URL_GET_COMPONENT, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 for(int i = 0; i < response.length(); i++){
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
-                        mListComponent.add(new Component(jsonObject.getInt("Id"),
-                                jsonObject.getString("ComponentName"),
-                                jsonObject.getString("ComponentImage"),
-                                jsonObject.getInt("Status"),
+                        mListComponent.add(new Product(
+                                jsonObject.getInt("IdProduct"),
+                                jsonObject.getString("ProductName"),
+                                jsonObject.getString("Brand"),
                                 jsonObject.getDouble("Price"),
+                                jsonObject.getInt("Status"),
+                                jsonObject.getString("Description"),
+                                jsonObject.getString("Picture"),
                                 jsonObject.getInt("IdType")
-                                ));
+                        ));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -374,13 +366,13 @@ public class HomeFragment extends Fragment {
 
     private void getFeatureProduct(){
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, ServerLink.URL_FEATURED_PRODUCT, null, new Response.Listener<JSONArray>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, ServerLink.URL_GET_PRODUCT, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 for(int i = 0; i < response.length(); i++){
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
-                        mListFeaturedProduct.add(new FeaturedProduct(
+                        mListProduct.add(new Product(
                                 jsonObject.getInt("IdProduct"),
                                 jsonObject.getString("ProductName"),
                                 jsonObject.getString("Brand"),

@@ -28,8 +28,8 @@ import java.util.ArrayList;
 
 import AdapterLaptop.ProductAdapter;
 import Fragments.LaptopFragment;
-import IntefaceForLaptopManager.OnEventClickProductListener;
-import ModelLaptop.Product;
+import InterfaceForHomeManager.OnEventShowProduct;
+import ModelHome.Product;
 import URLServerLink.Sever;
 
 
@@ -59,15 +59,16 @@ public class LaptopTablayoutFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = LayoutInflater.from(getContext()).inflate(R.layout.fragment_laptop_tablayout,container,false);
         mListProduct = new ArrayList<>();
-        productAdapter = new ProductAdapter(getContext(), mListProduct, new OnEventClickProductListener() {
+        productAdapter = new ProductAdapter(getContext(), mListProduct, new OnEventShowProduct() {
             @Override
-            public void onClick(Product product) {
+            public void onClickShowProduct(Product product) {
                 Intent intent = new Intent(getActivity(), ActivityShowProduct.class);
                 intent.putExtra(LaptopFragment.KEY_GET_LAPTOP_PRODUCT, product);
                 startActivity(intent);
-                getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
             }
         });
+
         rv = v.findViewById(R.id.rvLaptopTablayout);
         rv.setAdapter(productAdapter);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),2);

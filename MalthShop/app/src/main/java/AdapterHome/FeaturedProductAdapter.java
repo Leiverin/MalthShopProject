@@ -18,65 +18,41 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import InterfaceForHomeManager.OnEventShowFeaturedProduct;
-import ModelHome.Component;
-import ModelHome.FeaturedProduct;
-import SharePreferencesManager.SavePreferences;
+import InterfaceForHomeManager.OnEventShowProduct;
+import ModelHome.Product;
 
-public class FeaturedProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    final int VIEW_COMPONENT = 1;
-    final int VIEW_MAIN_PRODUCT = 2;
-
+public class FeaturedProductAdapter extends RecyclerView.Adapter<FeaturedProductAdapter.MainProductViewHolder> {
     private Context mContext;
-    private List<FeaturedProduct> mListFeature;
-    private List<Component> mListComponent;
-    private OnEventShowFeaturedProduct onEventShowFeaturedProduct;
+    private List<Product> mListProduct;
+    private OnEventShowProduct onEventShowFeaturedProduct;
 
-    public FeaturedProductAdapter(Context mContext, List<FeaturedProduct> mListFeature, List<Component> mListComponent, OnEventShowFeaturedProduct onEventShowFeaturedProduct) {
+    public FeaturedProductAdapter(Context mContext, List<Product> mListProduct, OnEventShowProduct onEventShowFeaturedProduct) {
         this.mContext = mContext;
-        this.mListFeature = mListFeature;
-        this.mListComponent = mListComponent;
+        this.mListProduct = mListProduct;
         this.onEventShowFeaturedProduct = onEventShowFeaturedProduct;
-        notifyDataSetChanged();
     }
 
     @NonNull
     @NotNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-        if(viewType == VIEW_MAIN_PRODUCT){
-            return new MainProductViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_feature_products, parent, false));
-        }else if(viewType == VIEW_COMPONENT){
-            return new ComponentProductViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_feature_component_products, parent, false));
-        }else{
-            return null;
-        }
+    public MainProductViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_feature_products, parent, false);
+        return new MainProductViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull @NotNull RecyclerView.ViewHolder holder, int position) {
-        if(holder instanceof MainProductViewHolder){
-            ((MainProductViewHolder) holder).populate(mListFeature.get(position));
-        }
-        if(holder instanceof ComponentProductViewHolder){
-            ((ComponentProductViewHolder) holder).populate(mListComponent.get(position - mListFeature.size()));
+    public void onBindViewHolder(@NonNull @NotNull FeaturedProductAdapter.MainProductViewHolder holder, int position) {
+        Product product = mListProduct.get(position);
+        if(product == null){
+            return;
+        }else{
+            holder.populate(product);
         }
     }
 
     @Override
     public int getItemCount() {
-        return mListComponent.size() + mListFeature.size();
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if(position < mListFeature.size()){
-            return VIEW_MAIN_PRODUCT;
-        }
-        if((position - mListFeature.size()) < mListComponent.size()){
-            return VIEW_COMPONENT;
-        }
-        return -1;
+        return mListProduct == null ? 0 : mListProduct.size();
     }
 
     public class MainProductViewHolder extends RecyclerView.ViewHolder {
@@ -98,47 +74,15 @@ public class FeaturedProductAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             tvStatus = (TextView) itemView.findViewById(R.id.tv_status);
         }
 
-        public void populate(FeaturedProduct featuredProduct){
-            Glide.with(mContext).load(featuredProduct.getImgProduct()).into(imgFeatureProduct);
-            tvNameProduct.setText(featuredProduct.getProductName());
-            String status = featuredProduct.getStatus() == 0 ? "Còn hàng" : "Hết hàng";
+        public void populate(Product product){
+            Glide.with(mContext).load(product.getImgProduct()).into(imgFeatureProduct);
+            tvNameProduct.setText(product.getProductName());
+            String status = product.getStatus() == 0 ? "Còn hàng" : "Hết hàng";
             tvStatus.setText(status);
             cvContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onEventShowFeaturedProduct.onClickShowFeaturedProduct(featuredProduct);
-                }
-            });
-        }
-    }
-
-    public class ComponentProductViewHolder extends RecyclerView.ViewHolder {
-
-        private CardView cvContainer;
-        private ImageView imgFeatureComponentProduct;
-        private TextView tvNameComponentProduct;
-        private TextView tvComponentStatus;
-
-        public ComponentProductViewHolder(@NonNull @NotNull View itemView) {
-            super(itemView);
-            initView(itemView);
-        }
-
-        private void initView(View itemView) {
-            cvContainer = (CardView) itemView.findViewById(R.id.cv_container);
-            imgFeatureComponentProduct = (ImageView) itemView.findViewById(R.id.img_feature_component_product);
-            tvNameComponentProduct = (TextView) itemView.findViewById(R.id.tv_name_component_product);
-            tvComponentStatus = (TextView) itemView.findViewById(R.id.tv_component_status);
-        }
-        public void populate(Component component){
-            Glide.with(mContext).load(component.getComponentImage()).into(imgFeatureComponentProduct);
-            tvNameComponentProduct.setText(component.getComponentName());
-            String status = component.getStatus() == 0 ? "Còn hàng" : "Hết hàng";
-            tvComponentStatus.setText(status);
-            cvContainer.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onEventShowFeaturedProduct.onClickShowFeaturedComponent(component);
+                    onEventShowFeaturedProduct.onClickShowProduct(product);
                 }
             });
         }

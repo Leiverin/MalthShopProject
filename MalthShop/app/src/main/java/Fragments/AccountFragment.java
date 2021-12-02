@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -43,10 +44,11 @@ public class AccountFragment extends Fragment {
     private FragmentAccountBinding binding;
     private String urlGetCustomer="https://unemphatic-tailors.000webhostapp.com/Phone/getCustomer.php";
     private List<Customer> listCustomer;
-
+    TextView tvName;
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentAccountBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        tvName = binding.tvName;
         listCustomer = new ArrayList<>();
         if (SavePreferences.getUser(getContext()).getUsername().length() != 0) {
             binding.btnDangNhap.setVisibility(View.GONE);
@@ -120,7 +122,7 @@ public class AccountFragment extends Fragment {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        binding.tvName.setText(listCustomer.get(0).getFullname());
+                        tvName.setText(listCustomer.get(0).getFullname());
                     }
                 }, new Response.ErrorListener() {
             @Override

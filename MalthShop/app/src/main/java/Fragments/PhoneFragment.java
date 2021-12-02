@@ -7,14 +7,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
@@ -27,7 +24,6 @@ import com.android.volley.toolbox.Volley;
 import com.example.malthshop.ActivityShowProduct;
 import com.example.malthshop.R;
 import com.example.malthshop.SlideShow.Photo;
-import com.example.malthshop.databinding.FragmentPhoneBinding;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -42,12 +38,9 @@ import AdapterPhone.RecyclerViewElectronicAdapter;
 import AdapterPhone.RecyclerViewPhoneAdapter;
 import AdapterPhone.RecyclerViewPhoneHighlightsAdapter;
 import AutoSlideInPhone.AutoSliderViewPagerAdapter;
-import InterfaceForPhoneManager.OnEventClickElectronicComponent;
-import InterfaceForPhoneManager.OnEventShowHPhoneListener;
-import InterfaceForPhoneManager.OnEventShowPhoneListener;
+import InterfaceForHomeManager.OnEventShowProduct;
+import ModelHome.Product;
 import ModelPhone.Brand;
-import ModelPhone.Electronic;
-import ModelPhone.Product;
 import me.relex.circleindicator.CircleIndicator;
 
 public class PhoneFragment extends Fragment {
@@ -79,7 +72,7 @@ public class PhoneFragment extends Fragment {
 
     private List<Product> list;
     private List<Brand> brandList;
-    private List<Electronic> electronicList;
+    private List<Product> electronicList;
 
     private RecyclerViewPhoneHighlightsAdapter spNoiBatAdapter;
     private RecyclerViewBrandAdapter brandAdapter;
@@ -106,13 +99,13 @@ public class PhoneFragment extends Fragment {
         brandList = new ArrayList<>();
         electronicList = new ArrayList<>();
         // rv Sản phẩm nổi bật
-        spNoiBatAdapter = new RecyclerViewPhoneHighlightsAdapter(getContext(), list, new OnEventShowHPhoneListener() {
+        spNoiBatAdapter = new RecyclerViewPhoneHighlightsAdapter(getContext(), list, new OnEventShowProduct() {
             @Override
-            public void onClick(Product product) {
+            public void onClickShowProduct(Product product) {
                 Intent intent = new Intent(getActivity(), ActivityShowProduct.class);
                 intent.putExtra(KEY_GET_HIGHLIGHT_PHONE, product);
                 startActivity(intent);
-                getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
             }
         });
         rvSanPhamNoiBat.setAdapter(spNoiBatAdapter);
@@ -120,30 +113,33 @@ public class PhoneFragment extends Fragment {
         brandAdapter = new RecyclerViewBrandAdapter(getContext(), brandList);
         rvThuongHieuNoiBat.setAdapter(brandAdapter);
         // rv Linh kiện
-        electronicAdapter = new RecyclerViewElectronicAdapter(getContext(), electronicList, new OnEventClickElectronicComponent() {
+        electronicAdapter = new RecyclerViewElectronicAdapter(getContext(), electronicList, new OnEventShowProduct() {
             @Override
-            public void onClick(Electronic electronic) {
+            public void onClickShowProduct(Product product) {
                 Intent intent = new Intent(getActivity(), ActivityShowProduct.class);
-                intent.putExtra(KEY_GET_ELECTRONIC_COMPONENT, electronic);
+                intent.putExtra(KEY_GET_ELECTRONIC_COMPONENT, product);
                 startActivity(intent);
-                getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
+
             }
         });
         rvLinhKien.setAdapter(electronicAdapter);
+        getDataElectronic(urlGetDataElectronicComponents);
+
         // rv Phone
-        phoneAdapter = new RecyclerViewPhoneAdapter(getContext(), list, new OnEventShowPhoneListener() {
+        phoneAdapter = new RecyclerViewPhoneAdapter(getContext(), list, new OnEventShowProduct() {
             @Override
-            public void onClick(Product product) {
+            public void onClickShowProduct(Product product) {
                 Intent intent = new Intent(getActivity(), ActivityShowProduct.class);
                 intent.putExtra(KEY_GET_PHONE, product);
                 startActivity(intent);
-                getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
             }
         });
+
         rvSP.setAdapter(phoneAdapter);
         getDataSell(urlGetDataSell);
         getDataBrand(urlGetDataBrand);
-        getDataElectronic(urlGetDataElectronicComponents);
     }
 
     @Override
@@ -187,11 +183,14 @@ public class PhoneFragment extends Fragment {
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject object = response.getJSONObject(i);
-                        electronicList.add(new Electronic(
+                        electronicList.add(new Product(
                                 object.getInt("Id"),
-                                object.getString("ComponentName"),
-                                object.getString("ComponentImage"),
+                                object.getString("ProductName"),
+                                object.getString("Brand"),
                                 object.getDouble("Price"),
+                                object.getInt("Status"),
+                                object.getString("Description"),
+                                object.getString("Picture"),
                                 object.getInt("IdType")
                         ));
                     } catch (JSONException e) {

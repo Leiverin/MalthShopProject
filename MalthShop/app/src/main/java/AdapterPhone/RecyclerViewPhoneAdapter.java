@@ -18,19 +18,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import InterfaceForPhoneManager.OnEventShowPhoneListener;
-import ModelPhone.Product;
-import SharePreferencesManager.SavePreferences;
+import InterfaceForHomeManager.OnEventShowProduct;
+import ModelHome.Product;
 
 public class RecyclerViewPhoneAdapter extends RecyclerView.Adapter<RecyclerViewPhoneAdapter.PhoneViewHolder> {
     private Context context;
     private List<Product> list;
-    private OnEventShowPhoneListener onEventShowPhoneListener;
+    private OnEventShowProduct onEventShowProduct;
 
-    public RecyclerViewPhoneAdapter(Context context, List<Product> list, OnEventShowPhoneListener onEventShowPhoneListener) {
+    public RecyclerViewPhoneAdapter(Context context, List<Product> list, OnEventShowProduct onEventShowProduct) {
         this.context = context;
         this.list = list;
-        this.onEventShowPhoneListener = onEventShowPhoneListener;
+        this.onEventShowProduct = onEventShowProduct;
         notifyDataSetChanged();
     }
 
@@ -44,7 +43,7 @@ public class RecyclerViewPhoneAdapter extends RecyclerView.Adapter<RecyclerViewP
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull PhoneViewHolder holder, int position) {
-        Product product=list.get(position);
+        Product product = list.get(position);
         holder.tvNamePhone.setText(product.getProductName());
         holder.tvPrice.setText(product.getPrice()+"");
         if (product.getStatus()==0){
@@ -53,14 +52,14 @@ public class RecyclerViewPhoneAdapter extends RecyclerView.Adapter<RecyclerViewP
         if (product.getStatus()!=0){
             holder.tvStatusPhone.setText("Hết hàng");
         }
-        Picasso.get().load(product.getPicture())
+        Picasso.get().load(product.getImgProduct())
                 .placeholder(R.drawable.ic_baseline_home_24)
                 .error(R.drawable.ic_baseline_error_24)
                 .into(holder.imgPhone);
         holder.cvContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onEventShowPhoneListener.onClick(product);
+                onEventShowProduct.onClickShowProduct(product);
             }
         });
 

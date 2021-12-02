@@ -28,15 +28,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import AdapterLaptop.ElectronicComponentsAdapter;
-import IntefaceForLaptopManager.OnEventClickComponentLaptopListener;
-import ModelLaptop.ElectronicComponents;
+import InterfaceForHomeManager.OnEventShowProduct;
+import ModelHome.Product;
 import URLServerLink.Sever;
 
 
 public class ElectronicComponentsFragment extends Fragment {
     public static final String KEY_GET_COMPONENT_LAPTOP = "GET_COMPONENT_LAPTOP";
     private ElectronicComponentsAdapter electronicComponentsAdapter;
-    List<ElectronicComponents> mListAccessories;
+    List<Product> mListAccessories;
     private RecyclerView rv;
 
     public ElectronicComponentsFragment() {
@@ -62,13 +62,13 @@ public class ElectronicComponentsFragment extends Fragment {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_accessory, container, false);
         rv = view.findViewById(R.id.rvAccessory);
         mListAccessories = new ArrayList<>();
-        electronicComponentsAdapter = new ElectronicComponentsAdapter(getContext(), mListAccessories, new OnEventClickComponentLaptopListener() {
+        electronicComponentsAdapter = new ElectronicComponentsAdapter(getContext(), mListAccessories, new OnEventShowProduct() {
             @Override
-            public void onClick(ElectronicComponents electronicComponents) {
+            public void onClickShowProduct(Product electronicComponents) {
                 Intent intent = new Intent(getActivity(), ActivityShowProduct.class);
                 intent.putExtra(KEY_GET_COMPONENT_LAPTOP, electronicComponents);
                 startActivity(intent);
-                getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
             }
         });
         rv.setAdapter(electronicComponentsAdapter);
@@ -91,20 +91,20 @@ public class ElectronicComponentsFragment extends Fragment {
                     double price = 0;
                     int status = 0;
 
-
                     for (int i = 0; i < response.length(); i++) {
                         try {
-                            JSONObject jsonObject = response.getJSONObject(i);
-                            componentImage = jsonObject.getString("ComponentImage");
-                            componentName = jsonObject.getString("ComponentName");
-                            id = jsonObject.getInt("Id");
-                            idType = jsonObject.getInt("IdType");
-                            price = jsonObject.getDouble("Price");
-                            status = jsonObject.getInt("Status");
-                            mListAccessories.add(new ElectronicComponents(componentImage, componentName, id, idType, price, status));
+                            JSONObject object = response.getJSONObject(i);
+                            mListAccessories.add(new Product(
+                                    object.getInt("Id"),
+                                    object.getString("ProductName"),
+                                    object.getString("Brand"),
+                                    object.getDouble("Price"),
+                                    object.getInt("Status"),
+                                    object.getString("Description"),
+                                    object.getString("Picture"),
+                                    object.getInt("IdType")
+                            ));
                             electronicComponentsAdapter.notifyDataSetChanged();
-
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

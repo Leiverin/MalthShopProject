@@ -2,7 +2,7 @@ package ModelHome;
 
 import java.io.Serializable;
 
-public class FeaturedProduct implements Serializable {
+public class Product implements Serializable {
         private int id;
         private String productName;
         private String brand;
@@ -12,7 +12,7 @@ public class FeaturedProduct implements Serializable {
         private String imgProduct;
         private int type;
 
-        public FeaturedProduct(int id, String productName, String brand, double price, int status, String description, String imgProduct, int type) {
+        public Product(int id, String productName, String brand, double price, int status, String description, String imgProduct, int type) {
             this.id = id;
             this.productName = productName;
             this.brand = brand;

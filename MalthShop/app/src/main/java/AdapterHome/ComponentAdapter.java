@@ -1,8 +1,6 @@
 package AdapterHome;
 
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,28 +12,24 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.malthshop.MainActivity;
 import com.example.malthshop.R;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import InterfaceForHomeManager.OnEventShowComponentListener;
-import Login.LoginActivity;
-import Login.RegisterActivity;
-import ModelHome.Component;
-import SharePreferencesManager.SavePreferences;
+import InterfaceForHomeManager.OnEventShowProduct;
+import ModelHome.Product;
 
 public class ComponentAdapter extends RecyclerView.Adapter<ComponentAdapter.ComponentViewHolder> {
     private Context context;
-    private List<Component> mListComponent;
-    private OnEventShowComponentListener onEventShowComponentListener;
+    private List<Product> mListComponent;
+    private OnEventShowProduct onEventShowProduct;
 
-    public ComponentAdapter(Context context, List<Component> mListComponent, OnEventShowComponentListener onEventShowComponentListener) {
+    public ComponentAdapter(Context context, List<Product> mListComponent, OnEventShowProduct onEventShowProduct) {
         this.context = context;
         this.mListComponent = mListComponent;
-        this.onEventShowComponentListener = onEventShowComponentListener;
+        this.onEventShowProduct = onEventShowProduct;
     }
 
     @NonNull
@@ -48,7 +42,7 @@ public class ComponentAdapter extends RecyclerView.Adapter<ComponentAdapter.Comp
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull ComponentViewHolder holder, int position) {
-        Component component = mListComponent.get(position);
+        Product component = mListComponent.get(position);
         if(component == null){
             return;
         }else{
@@ -56,7 +50,7 @@ public class ComponentAdapter extends RecyclerView.Adapter<ComponentAdapter.Comp
             holder.cvContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onEventShowComponentListener.onShowComponent(component);
+                    onEventShowProduct.onClickShowProduct(component);
                 }
             });
         }
@@ -64,7 +58,7 @@ public class ComponentAdapter extends RecyclerView.Adapter<ComponentAdapter.Comp
 
     @Override
     public int getItemCount() {
-        return mListComponent != null ? mListComponent.size()-46 : 0;
+        return mListComponent != null ? mListComponent.size()-45 : 0;
     }
 
     public class ComponentViewHolder extends RecyclerView.ViewHolder {
@@ -83,8 +77,8 @@ public class ComponentAdapter extends RecyclerView.Adapter<ComponentAdapter.Comp
             imgComponent = (ImageView) itemView.findViewById(R.id.img_component);
             tvPriceComponent = (TextView) itemView.findViewById(R.id.tv_price_component);
         }
-        public void populate(Component component){
-            Glide.with(context).load(component.getComponentImage()).into(imgComponent);
+        public void populate(Product component){
+            Glide.with(context).load(component.getImgProduct()).into(imgComponent);
             tvPriceComponent.setText((component.getPrice()/100)+"K");
         }
     }

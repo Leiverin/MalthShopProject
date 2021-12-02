@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.malthshop.R;
@@ -17,19 +18,19 @@ import com.squareup.picasso.Picasso;
 import java.text.DecimalFormat;
 import java.util.List;
 
-import IntefaceForLaptopManager.OnEventClickProductListener;
-import ModelLaptop.Product;
-import SharePreferencesManager.SavePreferences;
+import InterfaceForHomeManager.OnEventShowProduct;
+import ModelHome.Product;
+
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
     private Context context;
     private List<Product> mListProduct;
-    private OnEventClickProductListener onEventClickProductListener;
+    private OnEventShowProduct onEventShowProduct;
 
-    public ProductAdapter(Context context, List<Product> mListProduct,OnEventClickProductListener onEventClickProductListener) {
+    public ProductAdapter(Context context, List<Product> mListProduct,OnEventShowProduct onEventShowProduct) {
         this.context = context;
         this.mListProduct = mListProduct;
-        this.onEventClickProductListener = onEventClickProductListener;
+        this.onEventShowProduct = onEventShowProduct;
     }
 
     @NonNull
@@ -47,14 +48,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
         holder.txtPriceLaptopNew.setText(decimalFormat.format(product.getPrice())+"");
         holder.txtNameLaptopNew.setText(product.getProductName());
-        Picasso.get().load(product.getImageProduct())
+        Picasso.get().load(product.getImgProduct())
                 .placeholder(R.drawable.laptop)
                 .error(R.drawable.ic_home)
                 .into(holder.imgLaptopNew);
         holder.lvContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onEventClickProductListener.onClick(product);
+                onEventShowProduct.onClickShowProduct(product);
             }
         });
 
@@ -71,11 +72,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         private TextView txtNameLaptopNew;
         private TextView txtPriceLaptopNew;
         private ImageView imgLaptopNew;
-        private LinearLayout lvContainer;
+        private CardView lvContainer;
 
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
-            lvContainer = (LinearLayout) itemView.findViewById(R.id.lv_container);
+            lvContainer = (CardView) itemView.findViewById(R.id.lv_container);
             txtNameLaptopNew = (TextView) itemView.findViewById(R.id.txtNameLaptopNew);
             txtPriceLaptopNew = (TextView) itemView.findViewById(R.id.txtPriceLaptopNew);
             imgLaptopNew = (ImageView) itemView.findViewById(R.id.imgLaptopNew);

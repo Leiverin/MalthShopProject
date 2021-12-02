@@ -19,19 +19,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import InterfaceForPhoneManager.OnEventClickElectronicComponent;
-import ModelPhone.Electronic;
-import SharePreferencesManager.SavePreferences;
+import InterfaceForHomeManager.OnEventShowProduct;
+import ModelHome.Product;
 
 public class RecyclerViewElectronicAdapter extends RecyclerView.Adapter<RecyclerViewElectronicAdapter.ElectronicViewHolder> {
     private Context context;
-    private List<Electronic> list;
-    private OnEventClickElectronicComponent onEventClickElectronicComponent;
+    private List<Product> list;
+    private OnEventShowProduct onEventShowProduct;
 
-    public RecyclerViewElectronicAdapter(Context context, List<Electronic> list, OnEventClickElectronicComponent onEventClickElectronicComponent) {
+    public RecyclerViewElectronicAdapter(Context context, List<Product> list, OnEventShowProduct onEventShowProduct) {
         this.context = context;
         this.list = list;
-        this.onEventClickElectronicComponent = onEventClickElectronicComponent;
+        this.onEventShowProduct = onEventShowProduct;
         notifyDataSetChanged();
     }
 
@@ -45,17 +44,17 @@ public class RecyclerViewElectronicAdapter extends RecyclerView.Adapter<Recycler
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull ElectronicViewHolder holder, int position) {
-        Electronic electronic= list.get(position);
-        holder.tvNameElectronic.setText(electronic.getComponentName());
+        Product electronic= list.get(position);
+        holder.tvNameElectronic.setText(electronic.getProductName());
         holder.tvPrice.setText(electronic.getPrice()+"");
-        Picasso.get().load(electronic.getComponentImage())
+        Picasso.get().load(electronic.getImgProduct())
                 .placeholder(R.drawable.ic_baseline_home_24)
                 .error(R.drawable.ic_baseline_error_24)
                 .into(holder.imgElectronic);
         holder.cvContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onEventClickElectronicComponent.onClick(electronic);
+                onEventShowProduct.onClickShowProduct(electronic);
             }
         });
     }
