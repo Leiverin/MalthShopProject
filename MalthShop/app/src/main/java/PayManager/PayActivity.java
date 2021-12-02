@@ -27,14 +27,16 @@ public class PayActivity extends AppCompatActivity {
         mListPay = new ArrayList<>();
         paymentAdapter = new PaymentAdapter(this, mListPay);
 
-        int type = getIntent().getIntExtra(ActivityShowProduct.KEY_TYPE_PRODUCT,-1);
-        double price = getIntent().getDoubleExtra(ActivityShowProduct.KEY_PRICE_PRODUCT, -1);
-        String nameProduct = getIntent().getStringExtra(ActivityShowProduct.KEY_NAME_PRODUCT);
-        String linkImgProduct = getIntent().getStringExtra(ActivityShowProduct.LINK_IMAGE_PRODUCT);
-        int quantity = getIntent().getIntExtra(ActivityShowProduct.KEY_QUANTITY_PRODUCT, -1);
+        int id = getIntent().getIntExtra(ActivityShowProduct.KEY_ID_PRODUCT,-1);
+        int quantity = getIntent().getIntExtra(ActivityShowProduct.KEY_QUANTITY_PRODUCT,-1);
+
+//        double price = getIntent().getDoubleExtra(ActivityShowProduct.KEY_PRICE_PRODUCT, -1);
+//        String nameProduct = getIntent().getStringExtra(ActivityShowProduct.KEY_NAME_PRODUCT);
+//        String linkImgProduct = getIntent().getStringExtra(ActivityShowProduct.LINK_IMAGE_PRODUCT);
+//        int quantity = getIntent().getIntExtra(ActivityShowProduct.KEY_QUANTITY_PRODUCT, -1);
         String orderDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date().getTime());
 
-        mListPay.add(new PayProduct(nameProduct, linkImgProduct, orderDate, quantity, price, type));
+//        mListPay.add(new PayProduct(nameProduct, linkImgProduct, orderDate, quantity, price, type));
 
         binding.rvPayProduct.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         binding.rvPayProduct.setAdapter(paymentAdapter);
