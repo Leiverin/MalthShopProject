@@ -95,8 +95,12 @@ public class AccountFragment extends Fragment {
         binding.viewPurchaseOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), PurchasedActivity.class));
-                getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
+                if(SavePreferences.getUser(getContext()).getUsername().length() == 0){
+                    SavePreferences.exchangeActivity(getContext());
+                }else{
+                    startActivity(new Intent(getActivity(), PurchasedActivity.class));
+                    getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
+                }
             }
         });
         return root;
