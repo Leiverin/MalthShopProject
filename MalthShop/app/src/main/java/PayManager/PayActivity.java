@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,6 +43,8 @@ import java.util.Map;
 
 import CartManager.Cart;
 import CartManager.CartActivity;
+import Fragments.AccountFragment;
+import ModelHome.Customer;
 import PurchaseOrderManager.PurchasedActivity;
 import SharePreferencesManager.SavePreferences;
 import URLServerLink.ServerLink;
@@ -50,6 +54,7 @@ public class PayActivity extends AppCompatActivity {
     private List<PayProduct> mListPay;
     private PaymentAdapter paymentAdapter;
     private List<Cart> mListCart;
+    private List<Customer> mListCusomer;
     private DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
     private Button btnHome;
     private Button btnPurchase;
@@ -61,6 +66,8 @@ public class PayActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         mListPay = new ArrayList<>();
         mListCart = new ArrayList<>();
+        mListCusomer = new ArrayList<>();
+        getCustomer(AccountFragment.urlGetCustomer);
         // Get Product Buy Now
         int id = getIntent().getIntExtra(ActivityShowProduct.KEY_ID_PRODUCT, -1);
         int quantity = getIntent().getIntExtra(ActivityShowProduct.KEY_QUANTITY_PRODUCT, -1);
@@ -289,5 +296,48 @@ public class PayActivity extends AppCompatActivity {
     private void initView(Dialog dialog) {
         btnHome = (Button) dialog.findViewById(R.id.btn_home);
         btnPurchase = (Button) dialog.findViewById(R.id.btn_purchase);
+    }
+    private void getCustomer(String url){
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONArray array = new JSONArray(response);
+                            for (int i = 0;i < array.length();i++){
+                                JSONObject object = array.getJSONObject(i);
+                                mListCusomer.add( new Customer(
+                                        object.getString("Username"),
+                                        object.getString("Password"),
+                                        object.getString("FullName"),
+                                        object.getInt("Age"),
+                                        object.getString("Address")
+                                ));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        binding.tvAddressPay.setText(mListCusomer.get(0).getAddress());
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(PayActivity.this, "Xảy ra lỗi", Toast.LENGTH_SHORT).show();
+                Log.d("AAAA", "Lỗi!\n" + error.toString());
+            }
+        }
+        ) {
+            @Nullable
+            @org.jetbrains.annotations.Nullable
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                String user=SavePreferences.getUser(PayActivity.this).getUsername();
+                params.put("Username", user);
+                return params;
+            }
+        };
+        requestQueue.add(stringRequest);
     }
 }

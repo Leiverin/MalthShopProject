@@ -44,7 +44,7 @@ import SharePreferencesManager.SavePreferences;
 
 public class AccountFragment extends Fragment {
     private FragmentAccountBinding binding;
-    private String urlGetCustomer="https://unemphatic-tailors.000webhostapp.com/Phone/getCustomer.php";
+    public static String urlGetCustomer="https://unemphatic-tailors.000webhostapp.com/Phone/getCustomer.php";
     private List<Customer> listCustomer;
     TextView tvName;
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -170,4 +170,5 @@ public class AccountFragment extends Fragment {
         };
         requestQueue.add(stringRequest);
     }
+
 }
