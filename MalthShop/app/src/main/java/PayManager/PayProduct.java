@@ -9,6 +9,8 @@ public class PayProduct{
     private double totalPrice;
     private int type;
 
+
+
     public PayProduct(String nameProduct, String imgProduct, String orderDate, int quantity, double price, int type) {
         this.nameProduct = nameProduct;
         this.imgProduct = nameProduct;

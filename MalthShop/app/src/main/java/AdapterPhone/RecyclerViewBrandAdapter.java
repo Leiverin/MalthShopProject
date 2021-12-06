@@ -45,7 +45,7 @@ public class RecyclerViewBrandAdapter extends RecyclerView.Adapter<RecyclerViewB
         holder.tvNamePhone.setText(brand.getBrandName());
         Picasso.get().load(brand.getBrandPicture())
                 .placeholder(R.drawable.ic_baseline_home_24)
-                .error(R.drawable.ic_baseline_error_24)
+                .error(R.drawable.ic_baseline_error_outline_24)
                 .into(holder.imgPhone);
         holder.cvContainer.setOnClickListener(new View.OnClickListener() {
             @Override

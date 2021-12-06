@@ -54,7 +54,7 @@ public class RecyclerViewPhoneAdapter extends RecyclerView.Adapter<RecyclerViewP
         }
         Picasso.get().load(product.getImgProduct())
                 .placeholder(R.drawable.ic_baseline_home_24)
-                .error(R.drawable.ic_baseline_error_24)
+                .error(R.drawable.ic_baseline_error_outline_24)
                 .into(holder.imgPhone);
         holder.cvContainer.setOnClickListener(new View.OnClickListener() {
             @Override

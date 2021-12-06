@@ -35,9 +35,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import CartManager.CartActivity;
 import Login.LoginActivity;
 import Login.RegisterActivity;
 import ModelHome.Customer;
+import PurchaseOrderManager.PurchasedActivity;
 import SharePreferencesManager.SavePreferences;
 
 public class AccountFragment extends Fragment {
@@ -51,10 +53,10 @@ public class AccountFragment extends Fragment {
         tvName = binding.tvName;
         listCustomer = new ArrayList<>();
         if (SavePreferences.getUser(getContext()).getUsername().length() != 0) {
+            binding.tvCard.setVisibility(View.VISIBLE);
+            binding.tvMail.setVisibility(View.VISIBLE);
             binding.btnDangNhap.setVisibility(View.GONE);
             binding.btnDangKy.setVisibility(View.GONE);
-            binding.ivCard.setVisibility(View.VISIBLE);
-            binding.ivMail.setVisibility(View.VISIBLE);
         }
 
         binding.btnDangKy.setOnClickListener(new View.OnClickListener() {
@@ -84,6 +86,19 @@ public class AccountFragment extends Fragment {
 //                Log.d("AAAA", "Lỗi!\n" + getCustomer(urlGetCustomer).toString());
             }
         });
+        binding.tvCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), CartActivity.class));
+            }
+        });
+        binding.viewPurchaseOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), PurchasedActivity.class));
+                getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
+            }
+        });
         return root;
     }
 
@@ -98,6 +113,12 @@ public class AccountFragment extends Fragment {
         super.onResume();
         if(SavePreferences.getUser(getContext()).getUsername().length() != 0){
             getCustomer(urlGetCustomer);
+            if (SavePreferences.getUser(getContext()).getUsername().length() != 0) {
+                binding.tvCard.setVisibility(View.VISIBLE);
+                binding.tvMail.setVisibility(View.VISIBLE);
+                binding.btnDangNhap.setVisibility(View.GONE);
+                binding.btnDangKy.setVisibility(View.GONE);
+            }
         }
     }
 

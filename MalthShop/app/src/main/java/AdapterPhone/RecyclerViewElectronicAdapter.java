@@ -49,7 +49,7 @@ public class RecyclerViewElectronicAdapter extends RecyclerView.Adapter<Recycler
         holder.tvPrice.setText(electronic.getPrice()+"");
         Picasso.get().load(electronic.getImgProduct())
                 .placeholder(R.drawable.ic_baseline_home_24)
-                .error(R.drawable.ic_baseline_error_24)
+                .error(R.drawable.ic_baseline_error_outline_24)
                 .into(holder.imgElectronic);
         holder.cvContainer.setOnClickListener(new View.OnClickListener() {
             @Override

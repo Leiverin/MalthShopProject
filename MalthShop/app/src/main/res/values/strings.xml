@@ -17,4 +17,6 @@ Liên kết Ví Malth Pay</string>
     <string name="title_special_product">Sản phẩm nổi bật</string>
     <string name="text_more">Xem thêm ></string>
 
+    <string name="text_bought">Đơn hàng của bạn đã vào trạng thái "Đang giao hàng".
+        Hãy vào "Đơn mua" để xem luôn nào</string>
 </resources>

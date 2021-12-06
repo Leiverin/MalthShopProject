@@ -12,7 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MalthShop"
         android:usesCleartextTraffic="true">
-        <activity android:name="PayManager.PayActivity"></activity>
+        <activity android:name="PurchaseOrderManager.ShowDetailPurchasedActivity"></activity>
+        <activity android:name="PurchaseOrderManager.PurchasedActivity" />
+        <activity android:name="CartManager.CartActivity" />
+        <activity android:name="PayManager.PayActivity" />
         <activity android:name="Login.RegisterActivity" />
         <activity
             android:name="SlideShow.SlideShowActivity"
@@ -30,7 +33,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"></activity>
+            android:label="@string/app_name" />
     </application>
 
 </manifest>
