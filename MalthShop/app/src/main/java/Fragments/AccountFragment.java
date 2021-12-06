@@ -96,7 +96,8 @@ public class AccountFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if(SavePreferences.getUser(getContext()).getUsername().length() == 0){
-                    SavePreferences.exchangeActivity(getContext());
+                    getActivity().startActivity(new Intent(getActivity(), LoginActivity.class));
+                    getActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                 }else{
                     startActivity(new Intent(getActivity(), PurchasedActivity.class));
                     getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
